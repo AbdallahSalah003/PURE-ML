@@ -238,8 +238,3 @@ API documentation is available at `http://localhost:8000/docs`.
 ## Limitations
 
 - Dynamic feature extraction (DNS, WHOIS, SSL) adds 2-8 seconds per prediction
-- New legitimate services launched after dataset collection may be incorrectly flagged
-- UUID-based URLs (Google Drive, Notion, Claude share links) are structurally
-  ambiguous — indistinguishable from phishing tracking links at the feature level
-- Learning curves plateau at ~5,000 samples — current feature set is the
-  performance ceiling, not data quantity
