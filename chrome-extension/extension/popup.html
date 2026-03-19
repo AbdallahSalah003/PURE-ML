@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phishing Detector</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 340px;
+      font-family: "Courier New", Courier, monospace;
+      background: #ffffff;
+      color: #000000;
+      padding: 12px;
+      font-size: 13px;
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    .header {
+      border-bottom: 2px solid #000000;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 15px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      font-size: 11px;
+      color: #555555;
+      margin-top: 2px;
+    }
+
+    /* ── Label ──────────────────────────────────────────── */
+    .label {
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      color: #000000;
+    }
+
+    /* ── Input ──────────────────────────────────────────── */
+    #url-input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #000000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      background: #ffffff;
+      color: #000000;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    #url-input:focus {
+      border: 1px solid #000000;
+      background: #fffff0;
+    }
+
+    #url-input::placeholder {
+      color: #aaaaaa;
+    }
+
+    /* ── Buttons ────────────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid #000000;
+      background: #ffffff;
+      color: #000000;
+      padding: 5px 10px;
+      text-transform: uppercase;
+    }
+
+    button:hover:not(:disabled) {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    button:disabled {
+      border-color: #aaaaaa;
+      color: #aaaaaa;
+      cursor: not-allowed;
+      background: #ffffff;
+    }
+
+    #check-btn {
+      flex: 1;
+    }
+
+    #clear-btn {
+      flex: 0;
+    }
+
+    /* ── Loading ────────────────────────────────────────── */
+    #loading {
+      display: none;
+      border: 1px solid #000000;
+      padding: 10px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    #loading p {
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    #loading-step {
+      font-size: 11px;
+      color: #555555;
+    }
+
+    .dots::after {
+      content: '';
+      animation: dots 1.2s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%   { content: '';    }
+      25%  { content: '.';   }
+      50%  { content: '..';  }
+      75%  { content: '...'; }
+    }
+
+    /* ── Result box ─────────────────────────────────────── */
+    #result {
+      display: none;
+      border: 2px solid #000000;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+
+    #result.safe {
+      border-left: 6px solid #000000;
+      background: #f0fff0;
+    }
+
+    #result.danger {
+      border-left: 6px solid #000000;
+      background: #fff0f0;
+    }
+
+    #result.warning {
+      border-left: 6px solid #000000;
+      background: #fffff0;
+    }
+
+    .result-verdict {
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 6px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 4px;
+      padding: 2px 0;
+      border-bottom: 1px dotted #cccccc;
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .result-key {
+      color: #555555;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    .result-val {
+      font-weight: bold;
+    }
+
+    /* ── Probability bar ────────────────────────────────── */
+    .prob-bar-bg {
+      height: 8px;
+      border: 1px solid #000000;
+      background: #ffffff;
+      margin: 6px 0;
+    }
+
+    .prob-bar-fill {
+      height: 100%;
+      background: #000000;
+      transition: width 0.5s ease;
+    }
+
+    /* ── Error ──────────────────────────────────────────── */
+    #error-box {
+      display: none;
+      border: 1px solid #000000;
+      padding: 8px;
+      font-size: 12px;
+      background: #fff0f0;
+      margin-bottom: 12px;
+    }
+
+    /* ── History ────────────────────────────────────────── */
+    #history-section {
+      display: none;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    .history-title {
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    #clear-history-btn {
+      font-size: 10px;
+      padding: 2px 6px;
+      border: 1px solid #000000;
+    }
+
+    .history-list {
+      max-height: 90px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 2px;
+      cursor: pointer;
+      border-bottom: 1px dotted #cccccc;
+      font-size: 11px;
+    }
+
+    .history-item:hover {
+      background: #f5f5f5;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-marker {
+      font-size: 10px;
+      font-weight: bold;
+      flex-shrink: 0;
+      width: 14px;
+      text-align: center;
+    }
+
+    .history-marker.safe   { color: #006600; }
+    .history-marker.danger { color: #cc0000; }
+
+    .history-url {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #333333;
+    }
+
+    .history-prob {
+      flex-shrink: 0;
+      color: #555555;
+      font-size: 10px;
+    }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    .footer {
+      margin-top: 10px;
+      border-top: 1px solid #cccccc;
+      padding-top: 6px;
+      font-size: 10px;
+      color: #888888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Phishing Detector</h1>
+    <p>XGBoost model | Accuracy: 97%</p>
+  </div>
+
+  <!-- Input -->
+  <div class="label">URL to check:</div>
+  <input
+    id="url-input"
+    type="text"
+    placeholder="https://example.com/path"
+    autocomplete="off"
+    spellcheck="false"
+  />
+
+  <div class="btn-row">
+    <button id="check-btn" disabled> Check </button>
+    <button id="clear-btn">Clear</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading">
+    <p>Analysing<span class="dots"></span></p>
+    <div id="loading-step">Extracting features</div>
+  </div>
+
+  <!-- Result -->
+  <div id="result">
+    <div class="result-verdict" id="result-verdict"></div>
+
+    <div class="label" style="margin-bottom:4px; font-size:10px;">
+      Phishing probability:
+    </div>
+    <div class="prob-bar-bg">
+      <div class="prob-bar-fill" id="prob-bar"></div>
+    </div>
+
+    <div class="result-row">
+      <span class="result-key">Probability</span>
+      <span class="result-val" id="detail-prob"></span>
+    </div>
+    <div class="result-row">
+      <span class="result-key">Verdict</span>
+      <span class="result-val" id="detail-verdict"></span>
+    </div>
+    <div class="result-row">
+      <span class="result-key">Confidence</span>
+      <span class="result-val" id="detail-confidence"></span>
+    </div>
+    <div class="result-row">
+      <span class="result-key">URL</span>
+      <span class="result-val" id="detail-url"
+            style="max-width:180px; overflow:hidden;
+                   text-overflow:ellipsis; white-space:nowrap;">
+      </span>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="error-box"></div>
+
+  <!-- History -->
+  <div id="history-section">
+    <div class="history-header">
+      <span class="history-title">Recent checks</span>
+      <button id="clear-history-btn">Clear</button>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    This extension is AI and can make mistakes. Please double-check response.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

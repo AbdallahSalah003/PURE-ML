@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+joblib
+numpy
+scikit-learn
+xgboost
+dnspython
+python-whois
+requests
+pydantic
+imbalanced-learn
+python-dateutil

@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  phishing-api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models     # hot-swap model without rebuild
+    restart: unless-stopped
+    environment:
+      - MODEL_PATH=models/XGB__S1.joblib

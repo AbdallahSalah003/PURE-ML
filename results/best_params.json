@@ -1,0 +1,108 @@
+{
+  "LR__S1": {
+    "model__C": 1,
+    "model__max_iter": 2000,
+    "model__penalty": "l1",
+    "model__solver": "saga"
+  },
+  "LINEAR_SVC__S1": {
+    "model__estimator__C": 100,
+    "model__estimator__loss": "squared_hinge",
+    "model__estimator__max_iter": 2000,
+    "model__estimator__penalty": "l2"
+  },
+  "LR__S2": {
+    "model__C": 10,
+    "model__max_iter": 2000,
+    "model__penalty": "l1",
+    "model__solver": "saga"
+  },
+  "LINEAR_SVC__S2": {
+    "model__estimator__C": 100,
+    "model__estimator__loss": "squared_hinge",
+    "model__estimator__max_iter": 2000,
+    "model__estimator__penalty": "l2"
+  },
+  "LR__S3": {
+    "model__C": 10,
+    "model__max_iter": 2000,
+    "model__penalty": "l1",
+    "model__solver": "saga"
+  },
+  "LINEAR_SVC__S3": {
+    "model__estimator__C": 0.1,
+    "model__estimator__loss": "squared_hinge",
+    "model__estimator__max_iter": 2000,
+    "model__estimator__penalty": "l2"
+  },
+  "LR__S4": {
+    "model__C": 1,
+    "model__max_iter": 2000,
+    "model__penalty": "l1",
+    "model__solver": "saga"
+  },
+  "LINEAR_SVC__S4": {
+    "model__estimator__C": 0.01,
+    "model__estimator__loss": "squared_hinge",
+    "model__estimator__max_iter": 2000,
+    "model__estimator__penalty": "l2"
+  },
+  "LR__S5": {
+    "model__C": 1,
+    "model__max_iter": 2000,
+    "model__penalty": "l1",
+    "model__solver": "saga"
+  },
+  "LINEAR_SVC__S5": {
+    "model__estimator__C": 10,
+    "model__estimator__loss": "squared_hinge",
+    "model__estimator__max_iter": 2000,
+    "model__estimator__penalty": "l2"
+  },
+  "LR__S6": {
+    "model__C": 1,
+    "model__max_iter": 2000,
+    "model__penalty": "l1",
+    "model__solver": "saga"
+  },
+  "LINEAR_SVC__S6": {
+    "model__estimator__C": 0.1,
+    "model__estimator__loss": "squared_hinge",
+    "model__estimator__max_iter": 2000,
+    "model__estimator__penalty": "l2"
+  },
+  "RF__S1": {
+    "model__max_depth": 16,
+    "model__max_features": "sqrt",
+    "model__min_samples_leaf": 4,
+    "model__min_samples_split": 10,
+    "model__n_estimators": 300
+  },
+  "XGB__S1": {
+    "model__device": "cuda",
+    "model__gamma": 0.1,
+    "model__learning_rate": 0.1,
+    "model__max_depth": 6,
+    "model__min_child_weight": 5,
+    "model__n_estimators": 500,
+    "model__reg_lambda": 5.0,
+    "model__subsample": 0.8
+  },
+  "RF__S2": {
+    "model__max_depth": 16,
+    "model__max_features": "sqrt",
+    "model__min_samples_leaf": 4,
+    "model__min_samples_split": 10,
+    "model__n_estimators": 300
+  },
+  "XGB__S2": {
+    "model__device": "cuda",
+    "model__gamma": 0.5,
+    "model__learning_rate": 0.1,
+    "model__max_depth": 6,
+    "model__min_child_weight": 5,
+    "model__n_estimators": 500,
+    "model__reg_lambda": 5.0,
+    "model__subsample": 0.8
+  }
+}
