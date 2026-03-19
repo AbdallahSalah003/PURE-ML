@@ -16,7 +16,8 @@ SCORING        = "f1"
 CORR_METHOD    = "spearman"
 CORR_THRESHOLD = 0.90
 PCA_VARIANCE   = 0.95
-
+EARLY_STOPPING_ROUNDS = 30
+CIEL_N_ESTIMATORS = 2000
 
 LR_SVM_SCENARIOS = {
     "S1": (False, False, False),

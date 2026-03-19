@@ -12,17 +12,8 @@ PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 def plot_learning_curves(summary_df, arrays: dict, y_train,
                           lr_svm_scenarios: dict,
                           train_sizes=np.linspace(0.1, 1.0, 8)):
-    """
-    For the top 4 models by test F1:
-    Plot Train Error and CV Error (1 - F1) vs training size.
-
-    High train error              → high bias  (underfitting)
-    Large gap (cv - train error)  → high variance (overfitting)
-    Both errors high and parallel → high bias
-    Gap closing as size grows     → variance reducible with more data
-    """
     CV     = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
-    top4   = summary_df.nlargest(4, "test_f1")["experiment"].tolist()
+    top4 = summary_df.nlargest(4, "test_f1_tuned")["experiment"].tolist()
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
     axes_flat = axes.flatten()
@@ -36,7 +27,19 @@ def plot_learning_curves(summary_df, arrays: dict, y_train,
             _, use_dcf, _ = lr_svm_scenarios[scenario]
             Xtr = arrays["dcf_scaled"][0] if use_dcf else arrays["full_scaled"][0]
 
-        estimator = joblib.load(MODELS_DIR / f"{key}.joblib")
+
+        if model_prefix == "XGB":
+            clean_path = MODELS_DIR / f"{key}_clean.joblib"
+            if clean_path.exists():
+                estimator = joblib.load(clean_path)
+            else:
+                estimator = joblib.load(MODELS_DIR / f"{key}.joblib")
+                estimator.set_params(
+                    early_stopping_rounds = None,
+                    n_estimators          = estimator.best_iteration + 1
+                )
+        else:
+            estimator = joblib.load(MODELS_DIR / f"{key}.joblib")
 
         train_sizes_abs, train_scores, cv_scores = learning_curve(
             estimator, Xtr, y_train,
@@ -86,14 +89,3 @@ def plot_learning_curves(summary_df, arrays: dict, y_train,
     print(f"Saved → {PLOTS_DIR / 'learning_curves_top4.png'}")
 
 
-# Train error flat near 0, CV error flat but higher, gap constant
-# → High variance — regularize more, gap won't close with more data
-
-# Both errors high and close together
-# → High bias — model too simple, need more complexity or features
-
-# Both errors low and close together (gap < 0.03)
-# → Well generalised — this is what you want
-
-# CV error decreasing as training size grows, gap closing
-# → Variance reducible — getting more data would help
