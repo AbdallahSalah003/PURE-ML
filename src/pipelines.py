@@ -43,11 +43,7 @@ def get_rf_xgb_models():
             random_state=RANDOM_STATE), XGB_GRID)
     ]
 
-
-
-def refit_xgb_with_early_stopping(grid, Xtr, y_train,
-                                   Xcv, y_cv,
-                                   random_state: int = RANDOM_STATE) -> XGBClassifier:
+def refit_xgb_with_early_stopping(grid, Xtr, y_train, Xcv, y_cv, random_state: int = RANDOM_STATE) -> XGBClassifier:
     """
     after GridSearchCV find best params refit XGBoost with
     early stopping using X_cv as the eval set
@@ -57,27 +53,14 @@ def refit_xgb_with_early_stopping(grid, Xtr, y_train,
         for k, v in grid.best_params_.items()
     }
     best.pop("n_estimators", None)
-    final_xgb = XGBClassifier(
-        **best,
-        n_estimators          = CIEL_N_ESTIMATORS, 
-        early_stopping_rounds = EARLY_STOPPING_ROUNDS,
-        eval_metric           = "logloss",
-        random_state          = random_state,
-    )
+    final_xgb = XGBClassifier(**best, n_estimators = CIEL_N_ESTIMATORS, early_stopping_rounds = EARLY_STOPPING_ROUNDS, 
+                              eval_metric = "logloss", random_state = random_state)
 
-    final_xgb.fit(
-        Xtr, y_train,
-        eval_set = [(Xcv, y_cv)],
-        verbose  = False,
-    )
-    n_trees = final_xgb.best_iteration + 1
-    print(f"  Early stopping: best iteration = {n_trees} trees "
-          f"(out of 2000 max)")
+    final_xgb.fit(Xtr, y_train, eval_set = [(Xcv, y_cv)],  verbose  = False)
 
     return final_xgb
 
-def refit_xgb_without_early_stopping(final_model, Xtr, y_train,
-                                      random_state: int = RANDOM_STATE) -> XGBClassifier:
+def refit_xgb_without_early_stopping(final_model, Xtr, y_train, random_state: int = RANDOM_STATE) -> XGBClassifier:
     """
     refit XGBoost using the optimal n_estimators found by early stopping
     but WITHOUT early stopping  so learning_curve() can call .fit()
@@ -87,12 +70,10 @@ def refit_xgb_without_early_stopping(final_model, Xtr, y_train,
     params = final_model.get_params()
     params.pop("early_stopping_rounds", None)
     params.pop("callbacks", None)
-    params["n_estimators"]  = optimal_n
-    params["random_state"]  = random_state
+    params["n_estimators"]=optimal_n
+    params["random_state"]=random_state
 
     clean_xgb = XGBClassifier(**params)
     clean_xgb.fit(Xtr, y_train)
 
-    print(f"  Clean model (no early stopping): "
-          f"n_estimators={optimal_n}")
     return clean_xgb

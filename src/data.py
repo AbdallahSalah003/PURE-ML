@@ -7,12 +7,8 @@ def load_splits(data_path: str):
     df = pd.read_csv(data_path)
     X = df.drop(TARGET_COL, axis=1)
     y = df[TARGET_COL]
-    X_train, X_, y_train, Y_ = train_test_split(
-        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
-    )
-    X_cv, X_test, y_cv, y_test = train_test_split(
-        X_, Y_, test_size=CV_TEST_SIZE, random_state=RANDOM_STATE, stratify=Y_
-    )
+    X_train, X_, y_train, Y_ = train_test_split(X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y)
+    X_cv, X_test, y_cv, y_test = train_test_split(X_, Y_, test_size=CV_TEST_SIZE, random_state=RANDOM_STATE, stratify=Y_)
     del X_, Y_ 
     print(f"Raw Data Split:\n Train: {X_train.shape}\n CV: {X_cv.shape} \n Test: {X_test.shape}\n")
     return X_train, X_cv, X_test, y_train, y_cv, y_test

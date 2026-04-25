@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+Name                | Tasks
+---------------------------------------------------------------------------
+Abdulrahman Sami    | Preprocessing and Data Analysis
+---------------------------------------------------------------------------
+Abdallah Salah      | (RF & Xgb with early stopping) Experiments and Hyperparameter tunning
+---------------------------------------------------------------------------
+Mohamed Elkhayat    | (LR & LinearSVC) Experiments and Hyperparameter tunning
+---------------------------------------------------------------------------
+Mohamed Sayed       | Pipelines, eval metrics, and threshold tunning 
+---------------------------------------------------------------------------
